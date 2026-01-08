@@ -2,10 +2,59 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "sqlite"
+}
+
+enum LoanType {
+  federal
+  private
+  other
+}
+
+model ExplanationLog {
+  id          String   @id @default(cuid())
+  loanType    LoanType
+  loanName    String?
+  question    String
+  explanation String
+  createdAt   DateTime @default(now())
+}
+
+model LoanOffer {
+  id             String   @id @default(cuid())
+  loanType       LoanType
+  loanName       String?
+  principal      Float
+  apr            Float
+  termMonths     Int
+  monthlyPayment Float?
+  fees           Float    @default(0)
+  createdAt      DateTime @default(now())
+
+  secondLooks SecondLookEvent[]
+}
+
+model SecondLookEvent {
+  id          String   @id @default(cuid())
+  loanOfferId String
+  insightText String
+  dataSources String
+  createdAt   DateTime @default(now())
+
+  loanOffer LoanOffer @relation(fields: [loanOfferId], references: [id])
+}
+
+model LoanCalculation {
+  id             String   @id @default(cuid())
+  principal      Float
+  apr            Float
+  termMonths     Int
+  monthlyPayment Float
+  totalInterest  Float
+  totalCost      Float
+  createdAt      DateTime @default(now())
 }
