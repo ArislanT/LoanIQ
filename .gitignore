@@ -1,4 +1,26 @@
-# dependencies
+# env
+.env
+
+# sqlite
+*.db
+*.db-journal
+prisma/dev.db
+
+#node
+node_modules
+.next
+out
+dist
+
+#package manager
+.pnp
+
+# sqlite
+*.db
+*.db-journal
+#env
+.env
+#sqlidependencies
 /node_modules
 /.pnp
 .pnp.js
@@ -39,3 +61,5 @@ dist
 .env*
 
 
+
+/generated/prisma
