@@ -1,4 +1,4 @@
-import { applyScenario, LoanInput, ScenarioType } from "@/lib/loanEngine";
+import { applyScenario, LoanInput, ScenarioType } from "@/app/lib/loanEngine";
 
 export async function POST(req: Request) {
   const body = await req.json();
