@@ -56,6 +56,19 @@ export default function Questionnaire() {
     if (currentStep < 5) {
       setCurrentStep(currentStep + 1);
     } else {
+      // Store loan type selection (question 2) before navigating
+      const loanTypeAnswer = answers[2];
+      let loanType = 'both'; // default to show both
+      
+      if (loanTypeAnswer === questions_text.q2.options.federal) {
+        loanType = 'federal';
+      } else if (loanTypeAnswer === questions_text.q2.options.private) {
+        loanType = 'private';
+      } else if (loanTypeAnswer === questions_text.q2.options.first) {
+        loanType = 'both';
+      }
+      
+      sessionStorage.setItem('loanType', loanType);
       router.push('/loading');
     }
   };
@@ -76,7 +89,7 @@ export default function Questionnaire() {
       <ProgressBar currentStep={currentStep} totalSteps={5} />
       
       {/* Question Content */}
-      <div className="flex-1 bg-gray-50">
+      <div className="bg-gray-50 pb-6">
         <div className="max-w-2xl mx-auto px-4 py-6">
           {currentStep > 1 && (
             <button
@@ -106,17 +119,13 @@ export default function Questionnaire() {
               </OptionCard>
             ))}
           </RadioGroup.Root>
-        </div>
-      </div>
-      
-      {/* Bottom Button */}
-      <div className="sticky bottom-0 bg-white border-t border-gray-200 shadow-lg">
-        <div className="max-w-2xl mx-auto px-4 py-3">
-          <div className="flex justify-end">
+          
+          {/* Next Button */}
+          <div className="flex justify-end mt-6">
             <button
               onClick={handleNext}
               disabled={!answers[currentStep]}
-              className="flex items-center gap-1.5 px-6 py-2.5 bg-capital-blue text-white rounded-lg font-semibold text-sm hover:bg-capital-blue-dark transition-all duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed focus:outline-none focus:ring-4 focus:ring-capital-blue/20 shadow-sm"
+              className="flex items-center gap-1.5 px-5 py-2 bg-capital-blue text-white rounded-lg font-semibold text-sm hover:bg-capital-blue-dark transition-all duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed focus:outline-none focus:ring-4 focus:ring-capital-blue/20 shadow-sm"
             >
               {currentStep === 5 ? text.actions.complete : text.actions.next}
               <ArrowRightIcon className="w-4 h-4" />

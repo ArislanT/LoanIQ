@@ -55,13 +55,6 @@ export default function Loading() {
           <p className="text-base text-gray-600 leading-relaxed">
             {text.loading.subtitle}
           </p>
-          
-          {/* Progress Dots */}
-          <div className="flex justify-center gap-2 mt-8">
-            <div className="w-2 h-2 bg-capital-blue rounded-full animate-bounce" style={{ animationDelay: '0s' }} />
-            <div className="w-2 h-2 bg-capital-blue rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
-            <div className="w-2 h-2 bg-capital-blue rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
-          </div>
         </div>
       </div>
     </div>

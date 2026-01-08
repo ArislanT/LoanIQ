@@ -1,4 +1,6 @@
 export { default as RecommendedLoanCard } from './RecommendedLoanCard';
+export { default as FederalLoanCard } from './FederalLoanCard';
+export { default as PrivateLoanCard } from './PrivateLoanCard';
 export { default as ChatMessage, type Message } from './ChatMessage';
 export { default as TypingIndicator } from './TypingIndicator';
 export { default as SuggestedQuestions } from './SuggestedQuestions';

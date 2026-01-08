@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Dialog } from 'radix-ui';
 import { useLanguage } from '@/context/LanguageContext';
@@ -13,9 +13,13 @@ import {
   SuggestedQuestions,
   ChatInput,
   EnoAvatar,
+  FederalLoanCard,
+  PrivateLoanCard,
   type Message,
 } from '@/components/results';
 import type { RecommendedLoanData } from '@/types';
+import { FEDERAL_LOANS, type FederalLoanType } from '@/app/lib/federalLoans';
+import { PRIVATE_LENDERS, type PrivateLender } from '@/app/lib/privateLenders';
 
 export default function Results() {
   const router = useRouter();
@@ -26,9 +30,25 @@ export default function Results() {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [loanType, setLoanType] = useState<'federal' | 'private' | 'both'>('both');
+  const [federalLoans, setFederalLoans] = useState<FederalLoanType[]>([]);
+  const [privateLoans, setPrivateLoans] = useState<PrivateLender[]>([]);
 
-  // Get loans and questions from locales
-  const recommendedLoans = text.results.recommendedLoans;
+  // Load loans based on user selection
+  useEffect(() => {
+    const storedLoanType = sessionStorage.getItem('loanType') as 'federal' | 'private' | 'both' | null;
+    const selectedLoanType = storedLoanType || 'both';
+    setLoanType(selectedLoanType);
+    
+    if (selectedLoanType === 'federal' || selectedLoanType === 'both') {
+      setFederalLoans(FEDERAL_LOANS);
+    }
+    
+    if (selectedLoanType === 'private' || selectedLoanType === 'both') {
+      setPrivateLoans(PRIVATE_LENDERS);
+    }
+  }, []);
+
   const suggestedQuestions = text.results.suggestedQuestions;
 
   // send message to chatbot 
@@ -40,13 +60,19 @@ export default function Results() {
     setIsLoading(true);
     
     try {
+      // Combine federal and private loans for context
+      const allLoans = [
+        ...federalLoans.map(l => ({ name: l.name, type: 'federal', rate: l.interestBehavior })),
+        ...privateLoans.map(l => ({ name: l.name, type: 'private', rate: l.aprRange })),
+      ];
+      
       const response = await fetch('/api/explain', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userQuestion: messageText,
           language,
-          loans: recommendedLoans,
+          loans: allLoans,
         }),
       });
       
@@ -76,22 +102,42 @@ export default function Results() {
   };
 
   return (
-    <Layout showNav={false} showEnoChatbot={true}>
+    <Layout showNav={false} showEnoChatbot={false}>
       <div className="px-4 py-6">
         <div className="max-w-2xl mx-auto">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">{text.results.title}</h1>
           <p className="text-gray-600 mb-6">{text.results.subtitle}</p>
          
           <div className="space-y-4 mb-6">
-            {recommendedLoans.map((loan: RecommendedLoanData, index: number) => (
-              <RecommendedLoanCard
-                key={index}
-                loan={loan}
-                topPickLabel={text.results.topPick}
-                interestRateLabel={text.loans.interestRate}
-                monthlyPaymentLabel={text.loans.monthlyPayment}
-              />
-            ))}
+            {/* Federal Loans Section */}
+            {federalLoans.length > 0 && (
+              <>
+                <h2 className="text-lg font-bold text-capital-blue mt-6 mb-3">Federal Loans</h2>
+                {federalLoans.map((loan, index) => (
+                  <FederalLoanCard
+                    key={loan.id}
+                    loan={loan}
+                    isTopPick={index === 0 && loanType === 'federal'}
+                    topPickLabel={text.results.topPick}
+                  />
+                ))}
+              </>
+            )}
+            
+            {/* Private Loans Section */}
+            {privateLoans.length > 0 && (
+              <>
+                <h2 className="text-lg font-bold text-capital-blue mt-6 mb-3">Private Lenders</h2>
+                {privateLoans.map((loan, index) => (
+                  <PrivateLoanCard
+                    key={loan.id}
+                    loan={loan}
+                    isTopPick={index === 0 && loanType === 'private'}
+                    topPickLabel={text.results.topPick}
+                  />
+                ))}
+              </>
+            )}
           </div>
 
           {/* Chat with Eno button */}
