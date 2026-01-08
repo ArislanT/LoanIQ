@@ -7,7 +7,6 @@ import { PageHeader } from '@/components/shared';
 import { useLanguage } from '@/context/LanguageContext';
 import { loansData } from '@/data/loans';
 import { LoanData } from '@/types';
-import { LockClosedIcon, InfoCircledIcon, PersonIcon } from '@radix-ui/react-icons';
 
 export default function Loans() {
   const { language, text } = useLanguage();
@@ -40,9 +39,6 @@ export default function Loans() {
           {/* Federal Loans Section */}
           <div className="mb-10">
             <SectionHeader
-              icon={<LockClosedIcon className="w-5 h-5" />}
-              iconBgColor="bg-green-100"
-              iconColor="text-green-700"
               title={text.loans.categories.federal}
               subtitle="Government-backed loans with flexible repayment"
             />
@@ -56,9 +52,6 @@ export default function Loans() {
           {/* Private Loans Section */}
           <div className="mb-10">
             <SectionHeader
-              icon={<InfoCircledIcon className="w-5 h-5" />}
-              iconBgColor="bg-blue-100"
-              iconColor="text-blue-700"
               title={text.loans.categories.private}
               subtitle="Bank-issued loans based on creditworthiness"
             />
@@ -72,9 +65,6 @@ export default function Loans() {
           {/* Parent Loans Section */}
           <div className="mb-10">
             <SectionHeader
-              icon={<PersonIcon className="w-5 h-5" />}
-              iconBgColor="bg-purple-100"
-              iconColor="text-purple-700"
               title={text.loans.categories.parent}
               subtitle="Loans taken out by parents for student expenses"
             />

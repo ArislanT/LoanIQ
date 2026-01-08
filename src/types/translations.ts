@@ -99,6 +99,13 @@ export interface TranslationSchema {
     simulatePayment: string;
     askQuestion: string;
     paymentHistory: string;
+    simulator: {
+      title: string;
+      payExtra: string;
+      payMinimum: string;
+      missPayment: string;
+      reset: string;
+    };
   };
   
   loans: {

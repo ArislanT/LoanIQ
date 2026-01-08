@@ -96,6 +96,7 @@ export default function Dashboard() {
               iconBgColor="bg-green-600"
               title={text.dashboard.simulatePayment}
               subtitle="Calculate extra payments"
+              onClick={() => router.push('/simulate')}
             />
             
             <QuickActionButton

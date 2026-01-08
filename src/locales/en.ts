@@ -126,6 +126,14 @@ export const en: TranslationSchema = {
     simulatePayment: 'Simulate extra payment',
     askQuestion: 'Ask a question',
     paymentHistory: 'Payment history',
+    // Payment Simulator
+    simulator: {
+      title: 'Payment Simulator',
+      payExtra: 'Pay Extra',
+      payMinimum: 'Pay Minimum',
+      missPayment: 'Miss Payment',
+      reset: 'Reset to original',
+    },
   },
   
   // Loans
