@@ -76,7 +76,7 @@ export default function Results() {
   };
 
   return (
-    <Layout showNav={false} showEnoChatbot={false}>
+    <Layout showNav={false} showEnoChatbot={true}>
       <div className="px-4 py-6">
         <div className="max-w-2xl mx-auto">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">{text.results.title}</h1>
