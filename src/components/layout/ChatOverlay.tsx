@@ -5,6 +5,17 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useState, useRef, useEffect } from 'react';
 import { ArrowLeftIcon, PaperPlaneIcon } from '@radix-ui/react-icons';
 
+// Parse markdown bold (**text**) and render as JSX
+function formatText(text: string) {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={index}>{part.slice(2, -2)}</strong>;
+    }
+    return part;
+  });
+}
+
 interface Message {
   type: 'bot' | 'user';
   text: string;
@@ -46,19 +57,19 @@ export default function ChatOverlay({ isOpen, onClose }: ChatOverlayProps) {
     setIsLoading(true);
     
     try {
-      const response = await fetch('/api/chat', {
+      const response = await fetch('/api/explain', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          message: messageText,
+          userQuestion: messageText,
           language,
         }),
       });
       
       const data = await response.json();
       
-      if (data.success && data.response) {
-        setMessages(prev => [...prev, { type: 'bot', text: data.response }]);
+      if (data.success && data.explanation) {
+        setMessages(prev => [...prev, { type: 'bot', text: data.explanation }]);
       } else {
         setMessages(prev => [...prev, { 
           type: 'bot', 
@@ -108,7 +119,7 @@ export default function ChatOverlay({ isOpen, onClose }: ChatOverlayProps) {
                           : 'bg-gray-100 text-gray-900'
                       }`}
                     >
-                      <p className="leading-relaxed">{message.text}</p>
+                      <p className="leading-relaxed whitespace-pre-wrap">{formatText(message.text)}</p>
                     </div>
                   </div>
                 ))}

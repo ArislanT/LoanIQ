@@ -11,9 +11,10 @@ import ChatOverlay from './ChatOverlay';
 interface LayoutProps {
   children: ReactNode;
   showNav?: boolean;
+  showEnoChatbot?: boolean;
 }
 
-export default function Layout({ children, showNav = true }: LayoutProps) {
+export default function Layout({ children, showNav = true, showEnoChatbot = true }: LayoutProps) {
   const { language, toggleLanguage, text } = useLanguage();
   const pathname = usePathname();
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -49,30 +50,34 @@ export default function Layout({ children, showNav = true }: LayoutProps) {
         </div>
       </nav>
       
-      {/* Main Content */}
+    
       <main className="flex-1 pb-16">
         {children}
       </main>
       
-      {/* Sticky Chatbot Button */}
-      <button
-        onClick={() => setIsChatOpen(true)}
-        className="fixed bottom-16 right-3 z-40 w-14 h-14 rounded-full shadow-md hover:shadow-lg transition-all hover:scale-105 overflow-hidden border border-gray-200 bg-white p-2"
-        aria-label="Open chat with Eno"
-      >
-        <Image
-          src="/images/eno.png"
-          alt="Eno Assistant"
-          width={40}
-          height={40}
-          className="w-full h-full object-contain"
-        />
-      </button>
+      {/* chat overlay eno */}
+      {showEnoChatbot && (
+        <>
+          <button
+            onClick={() => setIsChatOpen(true)}
+            className="fixed bottom-16 right-3 z-40 w-14 h-14 rounded-full shadow-md hover:shadow-lg transition-all hover:scale-105 overflow-hidden border border-gray-200 bg-white p-2"
+            aria-label="Open chat with Eno"
+          >
+            <Image
+              src="/images/eno.png"
+              alt="Eno Assistant"
+              width={40}
+              height={40}
+              className="w-full h-full object-contain"
+            />
+          </button>
+          
+          {/* chat overlay with eno talking to the user */}
+          <ChatOverlay isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+        </>
+      )}
       
-      {/* Chat Overlay */}
-      <ChatOverlay isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
-      
-      {/* Bottom Navigation - Compact Footer Nav */}
+      {/* bottom navigation */}
       {showNav && (
         <nav className="bg-white border-t border-gray-200 fixed bottom-0 left-0 right-0 z-50 shadow-lg">
           <div className="max-w-7xl mx-auto">

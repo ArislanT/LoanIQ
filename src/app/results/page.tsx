@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Dialog, ScrollArea } from 'radix-ui';
+import { Dialog } from 'radix-ui';
 import { useLanguage } from '@/context/LanguageContext';
 import { ArrowRightIcon, Cross2Icon } from '@radix-ui/react-icons';
 import { Layout } from '@/components/layout';
@@ -40,19 +40,20 @@ export default function Results() {
     setIsLoading(true);
     
     try {
-      const response = await fetch('/api/chat', {
+      const response = await fetch('/api/explain', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          message: messageText,
+          userQuestion: messageText,
           language,
+          loans: recommendedLoans,
         }),
       });
       
       const data = await response.json();
       
-      if (data.success && data.response) {
-        setMessages(prev => [...prev, { type: 'bot', text: data.response }]);
+      if (data.success && data.explanation) {
+        setMessages(prev => [...prev, { type: 'bot', text: data.explanation }]);
       } else {
         setMessages(prev => [...prev, { 
           type: 'bot', 
@@ -75,7 +76,7 @@ export default function Results() {
   };
 
   return (
-    <Layout showNav={false}>
+    <Layout showNav={false} showEnoChatbot={false}>
       <div className="px-4 py-6">
         <div className="max-w-2xl mx-auto">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">{text.results.title}</h1>
@@ -98,7 +99,7 @@ export default function Results() {
             onClick={() => setIsChatOpen(true)}
             className="w-full flex items-center justify-center gap-3 bg-white border-2 border-capital-blue text-capital-blue py-3 rounded-lg font-semibold text-sm hover:bg-blue-50 transition-all mb-4"
           >
-            <EnoAvatar size="md" withBorder />
+            <EnoAvatar size="sm" />
             {text.results.chatWithEno}
           </button>
 
@@ -129,17 +130,15 @@ export default function Results() {
               </Dialog.Close>
             </div>
 
-            {/* Messages */}
-            <ScrollArea.Root className="flex-1 overflow-hidden">
-              <ScrollArea.Viewport className="h-full w-full">
-                <div className="px-4 py-4 space-y-3">
-                  {messages.map((message, index) => (
-                    <ChatMessage key={index} message={message} />
-                  ))}
-                  {isLoading && <TypingIndicator />}
-                </div>
-              </ScrollArea.Viewport>
-            </ScrollArea.Root>
+            {/* Messages - Scrollable */}
+            <div className="flex-1 overflow-y-auto">
+              <div className="px-4 py-4 space-y-3">
+                {messages.map((message, index) => (
+                  <ChatMessage key={index} message={message} />
+                ))}
+                {isLoading && <TypingIndicator />}
+              </div>
+            </div>
 
             {/* Suggested Questions */}
             {messages.length === 1 && (
