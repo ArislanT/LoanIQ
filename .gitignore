@@ -1,5 +1,13 @@
 # env
 .env
+.env
+*.db
+*.db-journal
+prisma/dev.db
+node_modules
+.next
+out
+dist
 
 # sqlite
 *.db
