@@ -2,89 +2,51 @@
 
 import { useState } from 'react';
 import { Layout, ChatOverlay } from '@/components/layout';
-import { LoanCard, LoanModal, SectionHeader } from '@/components/loans';
+import { SectionHeader } from '@/components/loans';
 import { PageHeader } from '@/components/shared';
+import { FederalLoanCard, PrivateLoanCard } from '@/components/results';
 import { useLanguage } from '@/context/LanguageContext';
-import { loansData } from '@/data/loans';
-import { LoanData } from '@/types';
+import { FEDERAL_LOANS } from '@/app/lib/federalLoans';
+import { PRIVATE_LENDERS } from '@/app/lib/privateLenders';
 
 export default function Loans() {
-  const { language, text } = useLanguage();
-  const [selectedLoan, setSelectedLoan] = useState<LoanData | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  
-  const currentLoans = loansData[language];
-  
-  const openLoanDetail = (loan: LoanData) => {
-    setSelectedLoan(loan);
-    setIsModalOpen(true);
-  };
-  
-  const handleOpenChat = () => {
-    setIsModalOpen(false);
-    setIsChatOpen(true);
-  };
+  const { text } = useLanguage();
   
   return (
-    <>
-      <Layout>
-        <div className="max-w-6xl mx-auto px-6 py-8">
-          {/* Page Header */}
-          <PageHeader 
-            title="Browse Loan Options" 
-            subtitle="Compare federal, private, and parent loan programs" 
+    <Layout>
+      <div className="max-w-6xl mx-auto px-6 py-8">
+        {/* Page Header */}
+        <PageHeader 
+          title={text.loans.title} 
+          subtitle={text.loans.subtitle} 
+        />
+        
+        {/* Federal Loans Section */}
+        <div className="mb-10">
+          <SectionHeader
+            title={text.loans.categories.federal}
+            subtitle="Government-backed loans with flexible repayment"
           />
-          
-          {/* Federal Loans Section */}
-          <div className="mb-10">
-            <SectionHeader
-              title={text.loans.categories.federal}
-              subtitle="Government-backed loans with flexible repayment"
-            />
-            <div className="space-y-4">
-              {currentLoans.federal.map((loan, index) => (
-                <LoanCard key={index} loan={loan} onClick={() => openLoanDetail(loan)} />
-              ))}
-            </div>
-          </div>
-          
-          {/* Private Loans Section */}
-          <div className="mb-10">
-            <SectionHeader
-              title={text.loans.categories.private}
-              subtitle="Bank-issued loans based on creditworthiness"
-            />
-            <div className="space-y-4">
-              {currentLoans.private.map((loan, index) => (
-                <LoanCard key={index} loan={loan} onClick={() => openLoanDetail(loan)} />
-              ))}
-            </div>
-          </div>
-          
-          {/* Parent Loans Section */}
-          <div className="mb-10">
-            <SectionHeader
-              title={text.loans.categories.parent}
-              subtitle="Loans taken out by parents for student expenses"
-            />
-            <div className="space-y-4">
-              {currentLoans.parent.map((loan, index) => (
-                <LoanCard key={index} loan={loan} onClick={() => openLoanDetail(loan)} />
-              ))}
-            </div>
+          <div className="space-y-4">
+            {FEDERAL_LOANS.map((loan) => (
+              <FederalLoanCard key={loan.id} loan={loan} />
+            ))}
           </div>
         </div>
-      </Layout>
-      
-      <LoanModal 
-        loan={selectedLoan} 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)}
-        onOpenChat={handleOpenChat}
-      />
-      
-      <ChatOverlay isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
-    </>
+        
+        {/* Private Lenders Section */}
+        <div className="mb-10">
+          <SectionHeader
+            title={text.loans.categories.private}
+            subtitle="Private lenders with competitive rates"
+          />
+          <div className="space-y-4">
+            {PRIVATE_LENDERS.map((loan) => (
+              <PrivateLoanCard key={loan.id} loan={loan} />
+            ))}
+          </div>
+        </div>
+      </div>
+    </Layout>
   );
 }

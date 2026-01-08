@@ -138,6 +138,8 @@ export const en: TranslationSchema = {
   
   // Loans
   loans: {
+    title: 'Browse Loan Options',
+    subtitle: 'Compare federal and private loan programs',
     bestForYou: 'Best for you because',
     interestType: 'Interest Type',
     interestRate: 'Interest Rate',
